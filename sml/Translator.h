@@ -4,10 +4,20 @@
 
 #ifndef SMALL_MACHINE_LANGUAGE_TRANSLATOR_H
 #define SMALL_MACHINE_LANGUAGE_TRANSLATOR_H
+
 #include <iostream>
 #include <fstream>
 
+#include "Method.h"
+
+struct State {
+
+    Method::Identifier
+};
+
 class Translator {
+    const char kMethodSeperator{'@'};
+    // const char kItemSeperator{','};
 public:
     static void readAndTranslate(const std::string_view fileName) {
 
@@ -21,7 +31,6 @@ public:
         while (std::getline(file, line)) {
             std::cout << line << '\n';
         }
-
 
     }
 };

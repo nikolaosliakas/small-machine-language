@@ -4,11 +4,9 @@
 #include <iostream>
 #include "Translator.h"
 
-int main() {
+int main(int argc, char* argv[]) {
 
-
-    std::cout << "Hello, World!" << '\n';
-    Translator::readAndTranslate("../tests/test1.sml");
+    Translator::readAndTranslate(argv[1]);
 
     return 0;
 }
