@@ -1,5 +1,5 @@
 @main:
-   push 10
+   push 10 30
    invoke @fib
    print
    push 1
