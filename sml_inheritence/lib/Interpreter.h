@@ -3,10 +3,9 @@
 #include <csignal>
 #include <memory>
 #include <unordered_map>
-
-#include "Instructions.h"
 #include "Method.h"
 
+class Instruction;
 
 class Interpreter{
 protected:
@@ -16,7 +15,7 @@ protected:
     std::vector<Frame> callStack_;
     bool running_ = false;
 public:
-    virtual ~Interpreter() = default;
+    virtual ~Interpreter();
 
     void load(std::vector<std::unique_ptr<Instruction>> prog,
         std::unordered_map<std::string, MethodDef> methods,
@@ -76,5 +75,10 @@ public:
     void setRunning(bool r){running_ = r;}
     bool isRunning() const {return running_; }
 };
+// This needed the full definition of Instruction for the destructor as the std::vector with unique pointers needs the WHOLE definition
+// when it is defined!
+#include "Instructions.h"
+
+inline Interpreter::~Interpreter() = default;
 
 #endif //SMALL_MACHINE_LANGUAGE_INTERPRETER_H
