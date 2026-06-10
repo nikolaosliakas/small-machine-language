@@ -1,5 +1,6 @@
 #ifndef SMALL_MACHINE_LANGUAGE_INTERPRETER_H
 #define SMALL_MACHINE_LANGUAGE_INTERPRETER_H
+#include <csignal>
 #include <memory>
 #include <unordered_map>
 
@@ -31,10 +32,19 @@ public:
     int peek() {return topFrame().peek();}
 
     // Ops on symbol_table within each topFrame
-
-
+    void store(const std::string& name, int v) {topFrame().symbols().set(name, v);}
+    int loadVar(const std::string& name) {return topFrame().symbols().get(name);}
     // Call management
-
+    void enter(const std::string& methodName, int returnPC){
+        callStack_.emplace_back(methodName, returnPC);
+    }
+    int leave(){
+        int ret = topFrame().returnAddr();
+        callStack_.pop_back();
+        return ret;
+    }
+    std::size_t callDepth() const { return callStack_.size(); }
+    bool hasFrame() const{ return !callStack_.empty(); }
 
     Frame& topFrame(){
         if (callStack_.empty())
@@ -42,8 +52,29 @@ public:
         return callStack_.back();
     }
 
+    // Lookups for labels and MethodNames
+    int labelPC(const std::string& lbl) const{
+        auto it = labels_.find(lbl);
+        if (it == labels_.end())
+            throw std::runtime_error("Unknown label: " + lbl);
+        return it->second;
+    }
+    const MethodDef& method(const std::string& name) const{
+        auto it = methods_.find(name);
+        if (it == methods_.end())
+            throw std::runtime_error("Unknown method: " + name);
+        return it->second;
+    }
+    bool methodExists(const std::string& name) const {
+        return methods_.contains(name);
+    }
+    // Program Access - and running state
+    int programSize() const { return static_cast<int>(program_.size());}
+    // fetches the instruction at the program count within the program dynamic array
+    Instruction* instrAt(int pc) const {return program_.at(pc).get(); }
 
-    
+    void setRunning(bool r){running_ = r;}
+    bool isRunning() const {return running_; }
 };
 
 #endif //SMALL_MACHINE_LANGUAGE_INTERPRETER_H
