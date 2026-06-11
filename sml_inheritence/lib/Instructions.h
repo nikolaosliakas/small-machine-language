@@ -116,6 +116,36 @@ struct RetInstr: Instruction{
     }
 };
 
+struct InvokeInstr : Instruction{
+    InvokeInstr(const std::string& m) : Instruction(m){};
+    std::string name() const override {return "invoke";}
+    int execute(Interpreter& vm, int pc) override{
+        std::string mname = operand_;
+        // if there is a name and it has a method char prefix remove the prefix...
+        if (!mname.empty() && mname.front() == '@') mname = mname.substr(1);
+
+        const MethodDef& mdef = vm.method(mname);
+        // Collect args from current caller
+            // example invoke listRange start end
+            // collect start and end from the operandStack!
+        std::vector<int> args;
+        size_t mParamSize {mdef.params.size()};
+        args.reserve(mParamSize);
+        for (size_t i{0}; i < mParamSize; ++i)
+            args.push_back(vm.pop());
+
+        // Create new callee frame
+        vm.enter(mname, pc + 1);
+
+        // Bind params backward
+        for (int i = static_cast<int>(mParamSize) - 1; i >= 0; --i)
+            vm.store(mdef.params[i], args[i]);
+
+        return mdef.startPC;
+    }
+};
+
+
 
 
 
