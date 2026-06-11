@@ -1,9 +1,8 @@
 # small-machine-language (SML)
 Small stack machine for interpreting an assembly-like instruction set.
 
-## Program Design 
 
-### Background
+## Background
 
 This program was first written in Java and this repository is an example of the same program in C++ totally re-written.
 
