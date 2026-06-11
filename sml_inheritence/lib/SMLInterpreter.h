@@ -1,7 +1,3 @@
-//
-// Created by n-l on 05/06/2026.
-//
-
 #ifndef SMALL_MACHINE_LANGUAGE_SMLINTERPRETER_H
 #define SMALL_MACHINE_LANGUAGE_SMLINTERPRETER_H
 #include <iostream>
@@ -9,9 +5,9 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include "Interpreter.h"
 
-
-class SMLInterpreter
+class SMLInterpreter : public Interpreter
 {
 public:
     void run_source(const std::string& src)
