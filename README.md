@@ -2,6 +2,14 @@
 Small stack machine for interpreting an assembly-like instruction set.
 
 
+## Table of Contents
+
+1. [Background](#Background)<br>
+2. [Program Design](#Program-Design)<br>
+   1. [SML Grammar Reference](#SML-Grammar-Reference)<br>
+3. [Test Inputs](#Test-Inputs)<br>
+4. [Building and Running](#Building-and-Running-SML)
+
 ## Background
 
 This program was first written in Java and this repository is an example of the same program in C++ totally re-written.
@@ -25,13 +33,12 @@ The program receives an `.sml` file as input. It reads and translates this to me
             | -- SMLInterpreter.h
 
 ## Program Design
-Here is the complete transcription and clean Markdown formatting of the SML Grammar Reference document from **image_1d021f.jpg**:
 
 ---
 
-# SML Grammar Reference
+### SML Grammar Reference
 
-### Legend
+#### Legend
 
 * **Keywords / Instructions**
 * **Literals / Identifiers**
@@ -39,7 +46,7 @@ Here is the complete transcription and clean Markdown formatting of the SML Gram
 
 ---
 
-## TOP-LEVEL STRUCTURE
+#### TOP-LEVEL STRUCTURE
 
 ```text
 program             →  ( method-def )*
@@ -58,7 +65,7 @@ label               →  label_name
 
 ---
 
-## INSTRUCTIONS — OPERAND STACK EFFECTS
+#### INSTRUCTIONS - OPERAND STACK EFFECTS
 
 | Instruction | Syntax            | Stack: before → after                                            |
 | --- |-------------------|------------------------------------------------------------------|
@@ -81,7 +88,7 @@ label               →  label_name
 
 ---
 
-## OPERAND GRAMMAR
+#### OPERAND GRAMMAR
 
 ```text
 int                 →  [-]? [0-9]+
@@ -99,14 +106,14 @@ label               →  L[a-zA-Z0-9_]+
 
 ---
 
-## ARGUMENTS ORDER ON INVOKE
+#### ARGUMENTS ORDER ON INVOKE
 
 > Arguments are pushed left-to-right before `invoke`, then popped and bound right-to-left so that the first parameter receives the first pushed value. For `@gcd: a b`, push `a` first then `b`; `InvokeInstr` pops `b` then `a` and stores them to match the parameter list in reverse.
 
 ---
 
 
-### Test Inputs
+## Test Inputs
 
 In the `/tests` directory are test input programs for the SML Interpreter. 
 
@@ -117,6 +124,29 @@ In the `/tests` directory are test input programs for the SML Interpreter.
 5. `test5_isqrt` - evaluates the integer sqrt of a number.
 6. `test6_gcd` - Euclidean algorithm to determine the greatest common denominator between two numbers.
 
-<!-----links-here->
+## Building and Running SML
 
-[0]:https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2018/p1204r0.html
+The project is a CMAKE project in `/sml`. If you're not using an IDE follow these commandline steps for Linux.
+
+1. Prerequisites:
+   1. C++ Compiler: either GCC 10+ or Clang 10+ with C++ version 20 min
+   2. CMake: 4.0 or higher
+   3. Build system: **ninja** or **make**
+   ```bash
+   # Check using the below executables
+   g++ --version  # clang++ --version
+   cmake --version
+   ninja --version # make --version  
+   ```
+2. Navigate to `/sml` --> `cd sml`.
+3. Build your project
+   ```bash
+   cmake -B build -S . -DCMAKE_BUILD_TYPE=Release
+   ```
+   `-B build` - store all built files in build directory (which is gitignored)
+   <br> `-S .` - use current directory
+   <br> `-DCMAKE_BUILD_TYPE=Release` - Optimises for a release binary just change the argument to `Debug` if you want to have a debug build to execute.
+4. Run program
+   ```bash
+   ./build/small_machine_language ../tests/test6_gcd.sml
+   ```
