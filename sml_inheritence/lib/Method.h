@@ -9,7 +9,7 @@ struct MethodDef
 {
     std::string name;
     std::vector<std::string> params;
-    int start_pc; // initial program counter
+    int startPC; // initial program counter
 };
 
 // Each Frame stores variables in a symboltable

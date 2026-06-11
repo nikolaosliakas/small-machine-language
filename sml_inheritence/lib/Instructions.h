@@ -116,8 +116,59 @@ struct RetInstr: Instruction{
     }
 };
 
+// Inequalities - control flow
+struct IfCmpGtInstr : Instruction{
+    explicit IfCmpGtInstr(const std::string& lbl) : Instruction(lbl) {}
+    std::string name() const override {return "if_cmpgt";}
+    int execute(Interpreter& vm, int pc) override{
+        int b = vm.pop();
+        int a = vm.pop();
+        if (a > b) return vm.labelPC(operand_);
+        return pc + 1;
+    }
+};
+struct IfCmpLtInstr : Instruction{
+    explicit IfCmpLtInstr(const std::string& lbl) : Instruction(lbl) {}
+    std::string name() const override {return "if_cmplt";}
+    int execute(Interpreter& vm, int pc) override{
+        int b = vm.pop();
+        int a = vm.pop();
+        if (a < b) return vm.labelPC(operand_);
+        return pc + 1;
+    }
+};
+
+struct IfCmpGteInstr : Instruction{
+    explicit IfCmpGteInstr(const std::string& lbl) : Instruction(lbl) {}
+    std::string name() const override {return "if_cmpgte";}
+    int execute(Interpreter& vm, int pc) override{
+        int b = vm.pop();
+        int a = vm.pop();
+        if (a >= b) return vm.labelPC(operand_);
+        return pc + 1;
+    }
+};
+struct IfCmpLteInstr : Instruction{
+    explicit IfCmpLteInstr(const std::string& lbl) : Instruction(lbl) {}
+    std::string name() const override {return "if_cmplte";}
+    int execute(Interpreter& vm, int pc) override{
+        int b = vm.pop();
+        int a = vm.pop();
+        if (a <= b) return vm.labelPC(operand_);
+        return pc + 1;
+    }
+};
+// direct jump
+struct GoToInstr : Instruction{
+    explicit GoToInstr(const std::string& lbl) : Instruction(lbl){}
+    std::string name() const override{ return "goto";}
+    int execute(Interpreter& vm, int pc) override{
+        return vm.labelPC(operand_);
+    }
+};
+// Invoke
 struct InvokeInstr : Instruction{
-    InvokeInstr(const std::string& m) : Instruction(m){};
+    explicit InvokeInstr(const std::string& m) : Instruction(m){};
     std::string name() const override {return "invoke";}
     int execute(Interpreter& vm, int pc) override{
         std::string mname = operand_;
@@ -145,9 +196,21 @@ struct InvokeInstr : Instruction{
     }
 };
 
+struct PrintInstr : Instruction {
+    std::string name() const override { return "print";}
+    int execute(Interpreter& vm, int pc) override{
+        std::cout << vm.pop() << '\n'; // this could be peek??
+        return pc + 1;
+    }
+};
 
 
-
+// if LABEL or method still move program counter, but do nothing on that
+// These still get stored into the program but do not effect the operand stack or symbol table
+struct NopInstr: Instruction{
+    std::string name() const override { return "nop";}
+    int execute(Interpreter& vm, int pc) override { return pc + 1;}
+};
 
 
 
